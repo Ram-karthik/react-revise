@@ -1,0 +1,19 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "checked": false,
+            "item": "Gym Workout"
+        },
+        {
+            "id": 2,
+            "checked": true,
+            "item": "Code"
+        },
+        {
+            "id": 3,
+            "checked": false,
+            "item": "Sleep"
+        }
+    ]
+}
