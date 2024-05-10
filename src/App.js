@@ -16,9 +16,11 @@ import UseRefUse from './useRefVsuseState';
 import UseEffectUsage from './useEffect';
 
 function App() {
-  const API_URL = 'http://localhost:3002/itemss';
+  const API_URL = 'http://localhost:3001/items';
   const [items, setItems] = useState([]);
   const [fetchErr, setFetchErr] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleCheck = (id) => {
     const listItems = items.map(item => item.id === id ? { ...item, checked: !item.checked } : item);
     setItems(listItems);
@@ -51,8 +53,8 @@ function App() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        if (true) throw Error('Data Not Found!')
         const response = await fetch(API_URL);
+        if (!response.ok) throw Error('Data Not Found!')
         const listItems = await response.json();
         console.log('List Items', listItems);
         setItems(listItems);
@@ -62,8 +64,13 @@ function App() {
         // setFetchErr(err.message);
         console.log(err.message);
       }
+      finally {
+        setIsLoading(false);
+      }
     }
-    (async () => await fetchItems())()
+    setTimeout(() => {
+      (async () => await fetchItems())()
+    }, 2000)
   }, [])
 
   // const [isDarkText, setIsDarkText] = useState(true);
@@ -80,11 +87,14 @@ function App() {
       <InputControl newItem={newItem} setNewItem={setNewItem} handleSubmit={handleSubmit} />
       <SearchItem searchItem={searchItem} setSearchItem={setSearchItem} />
       <main>
-        {/* {
+        {
           fetchErr && <p>{`Error: ${fetchErr}`}</p>
-        } */}
-        <ListKeyOne items={items.filter(item => ((item.item).toLowerCase()).includes((searchItem.toLowerCase())))}
-          handleCheck={handleCheck} handleDelete={handleDelete} />
+        }
+        {isLoading && <p>Loading...</p>}
+        {!isLoading && !fetchErr &&
+          <ListKeyOne items={items.filter(item => ((item.item).toLowerCase()).includes((searchItem.toLowerCase())))}
+            handleCheck={handleCheck} handleDelete={handleDelete} />
+        }
       </main>
       {/* <Footer length={items.length} /> */}
       {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '20px', padding: '40px' }}>
